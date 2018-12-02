@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 class Bucket
 {
     public Bucket()
@@ -12,6 +14,7 @@ class Bucket
         this.idType = UNDEFINED;
         this.idKind = UNDEFINED;
         this.nextBucket = null;
+        this.parameters = null;
     }
 
     public void setIdName(String idName)
@@ -132,6 +135,21 @@ class Bucket
         return nextBucket;
     }
 
+    // set parameters
+    public void setParameters(LinkedList<Bucket> parameters) {
+        this.parameters = parameters;
+    }
+
+    // add parameter
+    public void addParameter(Bucket parameter) {
+        this.parameters.add(parameter);
+    }
+
+    // get parameters
+    public LinkedList<Bucket> getParameters() {
+        return this.parameters;
+    }
+
     public static final int INTEGER = 0;
     public static final int BOOLEAN = 1;
     public static final int UNDEFINED = -1;
@@ -147,4 +165,7 @@ class Bucket
     private int idType;
     private int idKind;
     private Bucket nextBucket;
+
+    // function or procedure parameters
+    private LinkedList<Bucket> parameters;
 }
