@@ -11,7 +11,7 @@
  *
  * @author: DAJI Group (Dalton E. Pelawi & Jimmy)
  */
-
+import java.util.LinkedList;
 import java.util.Stack;
 
 class Context
@@ -25,6 +25,9 @@ class Context
         typeStack = new Stack();
         printSymbols = false;
         errorCount = 0;
+        subroutineNames = new Stack<String>();
+        orderNumberStack = new Stack<Integer>();
+        numberOfParamsStack = new Stack<Integer>();
     }
 
     /**
@@ -195,6 +198,147 @@ class Context
                         break;
                 }
                 break;
+            case 22:
+                // Initiate lexic level and order number of proc and func to hash table
+                symbolHash.find(currentStr).setLLON(lexicalLevel, orderNumber);
+                break;
+            case 23:
+                // Set type identifier
+                symbolHash.find(currentStr).setIdType(((Integer)typeStack.peek()).intValue());
+                break;
+            case 24:
+                // store procedure to symbol table
+                symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
+                // add parameters
+                symbolHash.find(currentStr).setParameters(new LinkedList<Bucket>());
+                subroutineNames.push(currentStr);
+                break;
+            case 25:
+                // add proc and func params
+                Bucket currentParam = symbolHash.find(currentStr);
+                String currentSubroutineName = subroutineNames.peek();
+                symbolHash.find(currentSubroutineName).addParameter(currentParam);
+                break;
+            case 26:
+                // store function to symbol table
+                symbolHash.find(currentStr).setIdKind(Bucket.FUNCTION);
+                // add parameters
+                symbolHash.find(currentStr).setParameters(new LinkedList<Bucket>());
+                subroutineNames.push(currentStr);
+                break;
+            case 27:
+                // keluar dari scope yang mengandung parameter. 
+                // balikin order number(case 51) dan decrease lexicallevel(case 2)
+                C(51);
+                C(2);
+                break;
+            case 28:
+                // cek apakah identifier nama prosedur atau bukan
+                if (symbolHash.find((String)symbolStack.peek()).getIdKind() != Bucket.UNDEFINED) {
+                    System.out.println("Procedure is not fully defined at line " + currentLine + ": " + currentStr);
+                    errorCount++;
+                }
+                else if (symbolHash.find((String)symbolStack.peek()).getIdKind() != Bucket.PROCEDURE) {
+                    System.out.println("Procedure expected at line " + currentLine + ": " + currentStr);
+                    errorCount++;
+                }
+                break;
+            case 29: {
+                // cek func dan proc yang tidak punya param
+                Integer expectedNumberOfParam = symbolHash.find((String)symbolStack.peek()).getParameters().size();
+                if (expectedNumberOfParam != 0) {
+                    System.out.println("Procedure or function expected zero parameters at line " + currentLine + ": " + currentStr);
+                    System.out.println("But " + expectedNumberOfParam + " paramaeters was found");
+                    errorCount++;
+                }
+                break;
+            }
+            case 30:
+                // push jumlah argument pertama kali
+                numberOfParamsStack.push(0);
+                break;
+            case 31:{
+                // check argument based on parameter
+                Integer currNumberOfParam = numberOfParamsStack.peek();
+                String subroutineName = (String)symbolStack.peek();
+                Integer expectedNumberOfParam = symbolHash.find(subroutineName).getParameters().size();
+                // check number of params
+                if (currNumberOfParam > expectedNumberOfParam) {
+                    System.out.println("Number of parameters exceeded for " + subroutineName + ", found:" + currNumberOfParam + " expected: " + expectedNumberOfParam);
+                    errorCount++;
+                } else {
+                    // check param type
+                    Integer paramType = symbolHash.find(subroutineName).getParameters().get(currNumberOfParam-1).getIdType();
+                    Integer expType = ((Integer)typeStack.peek()).intValue();
+
+                    if (paramType != expType) {
+                        System.out.println("Type mismatch at parameter number: " + currNumberOfParam + " at line:" + currentLine + ": " + currentStr);
+                        errorCount++;
+                    }
+                }
+                break;
+            }
+            case 32:{
+                Integer currNumberOfParam = numberOfParamsStack.pop();
+                String subroutineName = (String)symbolStack.peek();
+                Integer expectedNumberOfParam = symbolHash.find(subroutineName).getParameters().size();
+                if (currNumberOfParam != expectedNumberOfParam) {
+                    System.out.println("Number of parameters mismatched for " + subroutineName + ", found:" + currNumberOfParam + " expected: " + expectedNumberOfParam);
+                    errorCount++;
+                }
+                break;
+            }
+            case 33:
+                // cek apakah identifier nama fungsi atau bukan
+                if (symbolHash.find((String)symbolStack.peek()).getIdKind() != Bucket.UNDEFINED) {
+                    System.out.println("Function is not fully defined at line " + currentLine + ": " + currentStr);
+                    errorCount++;
+                }
+                if (symbolHash.find((String)symbolStack.peek()).getIdKind() != Bucket.FUNCTION) {
+                    System.out.println("Function expected at line " + currentLine + ": " + currentStr);
+                    errorCount++;
+                }
+                break;
+            case 34:{
+                // increment top of number of params
+                Integer currNumberOfParam = numberOfParamsStack.pop();
+                currNumberOfParam++;
+                numberOfParamsStack.push(currNumberOfParam);
+                break;
+            }
+            case 35:
+                // store number of argument to hash table
+                // we do not need to do this since we already have list of params. Just need to call parameters.size() to get number of arguments
+                break;
+            case 36:{
+                // check return type of func with expression inside func
+                Integer funcType = symbolHash.find((String)symbolStack.peek()).getIdType();
+                Integer expType = ((Integer)typeStack.peek()).intValue();
+                if (funcType != expType) {
+                    System.out.println("Unmatched type of expression to function at line " + currentLine + ": " + currentStr);
+                    errorCount++;
+                }
+                typeStack.push(new Integer(expType));
+                break;
+            }
+            case 37:{
+                // if identifier type is function C(33), else C(20)
+                Integer identifierType = symbolHash.find(currentStr).getIdKind();
+                if (identifierType == Bucket.FUNCTION) {
+                    C(33);
+                } else {
+                    C(20);
+                }
+                break;
+            }
+            case 50:
+                // push current order number ke stack
+                orderNumberStack.push(orderNumber);
+                break;
+            case 51:
+                // setelah keluar dari scope parameter, balikin order numbernya
+                orderNumber = orderNumberStack.pop();
+                break;
         }
     }
 
@@ -230,4 +374,11 @@ class Context
     public static int currentLine;
     private boolean printSymbols;
     public int errorCount;
+
+    // name of procedure and function, needed to add params
+    public static Stack<String> subroutineNames;
+    public static Stack<Integer> numberOfParamsStack;
+    
+    // menyimpan order number pada suatu lexic level sebelum berpindah level
+    public static Stack<Integer> orderNumberStack;
 }
