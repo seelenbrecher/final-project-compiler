@@ -1,8 +1,21 @@
 {
-  var A[10]     : integer
-  var B         : integer;
+ var x : integer
+ var zzz : integer
 
-  if A = B then
-    put "Ok"
-  end if
+
+    integer func y = {
+     var dummy : integer
+        ;
+        
+        x := 1
+        ;
+        
+        0
+    }
+    ;
+
+
+    x := 2
+    x := y
+    put x
 }

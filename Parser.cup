@@ -285,6 +285,7 @@ C36                ::= {: parser.context.C(36); :} ;
 C37                ::= {: parser.context.C(37); :} ;
 C50                ::= {: parser.context.C(50); :} ;
 C51                ::= {: parser.context.C(51); :} ;
+C52                ::= {: parser.context.C(52); :} ;
 
 R0                 ::= {: parser.generate.R(0); :} ;
 R1                 ::= {: parser.generate.R(1); :} ;

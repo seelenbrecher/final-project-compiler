@@ -221,7 +221,7 @@ class Generate
     {
         String teks;
 
-        //System.out.println("R" + ruleNo);
+        // System.out.println("R" + ruleNo + " " + cell);
         switch(ruleNo)
         {
             // R0 : assign pc and mt
@@ -717,6 +717,7 @@ class Generate
                 } else {
                     //TODO ada parameter
                 }
+                break;
             }
             // R44: Memanggil prosedur
             case 44: {

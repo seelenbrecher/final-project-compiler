@@ -37,7 +37,7 @@ class Context
     {
         boolean error = false;
 
-        //System.out.println("C" + ruleNo);
+        // System.out.println("C" + ruleNo + " " + Generate.cell);
         switch(ruleNo)
         {
             case 0:
@@ -232,7 +232,7 @@ class Context
                 break;
             case 28:
                 // cek apakah identifier nama prosedur atau bukan
-                if (symbolHash.find((String)symbolStack.peek()).getIdKind() != Bucket.UNDEFINED) {
+                if (symbolHash.find((String)symbolStack.peek()).getIdKind() == Bucket.UNDEFINED) {
                     System.out.println("Procedure is not fully defined at line " + currentLine + ": " + currentStr);
                     errorCount++;
                 }
@@ -243,7 +243,13 @@ class Context
                 break;
             case 29: {
                 // cek func dan proc yang tidak punya param
-                Integer expectedNumberOfParam = symbolHash.find((String)symbolStack.peek()).getParameters().size();
+                LinkedList<Bucket> parameters =  symbolHash.find((String)symbolStack.peek()).getParameters();
+                Integer expectedNumberOfParam;
+                if (parameters == null) {
+                    expectedNumberOfParam = 0;
+                } else {
+                    expectedNumberOfParam = parameters.size();
+                }
                 if (expectedNumberOfParam != 0) {
                     System.out.println("Procedure or function expected zero parameters at line " + currentLine + ": " + currentStr);
                     System.out.println("But " + expectedNumberOfParam + " paramaeters was found");
@@ -288,7 +294,7 @@ class Context
             }
             case 33:
                 // cek apakah identifier nama fungsi atau bukan
-                if (symbolHash.find((String)symbolStack.peek()).getIdKind() != Bucket.UNDEFINED) {
+                if (symbolHash.find((String)symbolStack.peek()).getIdKind() == Bucket.UNDEFINED) {
                     System.out.println("Function is not fully defined at line " + currentLine + ": " + currentStr);
                     errorCount++;
                 }
