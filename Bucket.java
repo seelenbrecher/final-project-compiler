@@ -15,6 +15,7 @@ class Bucket
         this.idKind = UNDEFINED;
         this.nextBucket = null;
         this.parameters = null;
+        this.baseAddress = UNDEFINED;
     }
 
     public void setIdName(String idName)
@@ -150,6 +151,16 @@ class Bucket
         return this.parameters;
     }
 
+    // set base address
+    public void setBaseAddress(int baseAddress) {
+        this.baseAddress = baseAddress;
+    }
+
+    // get base address
+    public int getBaseAddress() {
+        return this.baseAddress;
+    }
+
     public static final int INTEGER = 0;
     public static final int BOOLEAN = 1;
     public static final int UNDEFINED = -1;
@@ -168,4 +179,7 @@ class Bucket
 
     // function or procedure parameters
     private LinkedList<Bucket> parameters;
+
+    // Base address of func or proc
+    private int baseAddress;
 }

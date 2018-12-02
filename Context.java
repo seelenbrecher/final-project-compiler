@@ -21,11 +21,9 @@ class Context
         lexicalLevel = -1;
         orderNumber = 0;
         symbolHash = new Hash(HASH_SIZE);
-        symbolStack = new Stack();
         typeStack = new Stack();
         printSymbols = false;
         errorCount = 0;
-        subroutineNames = new Stack<String>();
         orderNumberStack = new Stack<Integer>();
         numberOfParamsStack = new Stack<Integer>();
     }
@@ -211,12 +209,12 @@ class Context
                 symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
                 // add parameters
                 symbolHash.find(currentStr).setParameters(new LinkedList<Bucket>());
-                subroutineNames.push(currentStr);
+                subRoutineNamesStack.push(currentStr);
                 break;
             case 25:
                 // add proc and func params
                 Bucket currentParam = symbolHash.find(currentStr);
-                String currentSubroutineName = subroutineNames.peek();
+                String currentSubroutineName = subRoutineNamesStack.peek();
                 symbolHash.find(currentSubroutineName).addParameter(currentParam);
                 break;
             case 26:
@@ -224,7 +222,7 @@ class Context
                 symbolHash.find(currentStr).setIdKind(Bucket.FUNCTION);
                 // add parameters
                 symbolHash.find(currentStr).setParameters(new LinkedList<Bucket>());
-                subroutineNames.push(currentStr);
+                subRoutineNamesStack.push(currentStr);
                 break;
             case 27:
                 // keluar dari scope yang mengandung parameter. 
@@ -339,6 +337,10 @@ class Context
                 // setelah keluar dari scope parameter, balikin order numbernya
                 orderNumber = orderNumberStack.pop();
                 break;
+            case 52: {
+                symbolHash.find(currentStr).setBaseAddress(Generate.cell);
+                break;
+            }
         }
     }
 
@@ -368,7 +370,7 @@ class Context
     public static int lexicalLevel;
     public static int orderNumber;
     public static Hash symbolHash;
-    private Stack symbolStack;
+    public static Stack symbolStack = new Stack();
     private Stack typeStack;
     public static String currentStr;
     public static int currentLine;
@@ -376,7 +378,7 @@ class Context
     public int errorCount;
 
     // name of procedure and function, needed to add params
-    public static Stack<String> subroutineNames;
+    public static Stack<String> subRoutineNamesStack = new Stack<String>();
     public static Stack<Integer> numberOfParamsStack;
     
     // menyimpan order number pada suatu lexic level sebelum berpindah level

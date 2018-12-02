@@ -23,7 +23,8 @@ class Generate
           boundStack        = new int[stackSize], // subscript out of range routine
           returnAddrStack   = new int[stackSize]; // fixing up/backpatching return address
 
-    int ll, on, top, addr, kode, cell;
+    int ll, on, top, addr, kode;
+    static int cell;
     private String currConst;
 
     public Generate()
@@ -691,16 +692,92 @@ class Generate
 
                 cell = cell + 29;
                 break;
+            // R42: kembali dari prosedur
+            case 42: {
+                Integer a = Context.lexicalLevel;
+                String subRoutineName = Context.subRoutineNamesStack.peek();
+                Integer numberOfParam = Context.symbolHash.find(subRoutineName).getParameters().size();
 
+                if (numberOfParam == 0) {
+                    HMachine.memory[cell++] = HMachine.BR;
+                } else {
+                    //TODO ada parameter
+                }
+                break;
+            }
+            // R43: Kembali dari fungsi
+            case 43: {
+                String subRoutineName = Context.subRoutineNamesStack.peek();
+                Integer numberOfParam = Context.symbolHash.find(subRoutineName).getParameters().size();
+                if (numberOfParam == 0) {
+                    // top - 1 = return add, and top = return value. So need to flip them first.
+                    HMachine.memory[cell] = HMachine.FLIP;
+                    HMachine.memory[cell + 1] = HMachine.BR;
+                    cell += 2;
+                } else {
+                    //TODO ada parameter
+                }
+            }
+            // R44: Memanggil prosedur
+            case 44: {
+                //set return address
+                HMachine.memory[cell] = HMachine.PUSH;
+                HMachine.memory[cell + 1] = cell + 5;
+                //cell + 2 and 3 = PUSH <FUNC BASE_ADDR>
+                HMachine.memory[cell + 2] = HMachine.PUSH;
+                HMachine.memory[cell + 3] = Context.symbolHash.find((String)Context.symbolStack.peek()).getBaseAddress();
+                HMachine.memory[cell + 4] = HMachine.BR;
+                cell += 5;
+                break;
+            }
+            // R45: membentuk tanda block pemanggilan prosedur
+            case 45: {
+                break;
+            }
+            // R45: membentuk tanda block pemanggilan function
+            case 46: {
+                break;
+            }
+            // R47: memanggil fungsi
+            case 47: {
+                //set return address
+                HMachine.memory[cell] = HMachine.PUSH;
+                HMachine.memory[cell + 1] = cell + 5;
+                //cell + 2 and 3 = PUSH <FUNC BASE_ADDR>
+                HMachine.memory[cell + 2] = HMachine.PUSH;
+                HMachine.memory[cell + 3] = Context.symbolHash.find((String)Context.symbolStack.peek()).getBaseAddress();
+                HMachine.memory[cell + 4] = HMachine.BR;
+                cell += 5;
+                break;
+            }
+            // R48: Menyimpan argument untuk pemanggilan prosedu/fungsi. 
+            case 48: {
+                HMachine.memory[cell] = HMachine.PUSH;
+                Bucket currentBucket = Context.symbolHash.find(Context.currentStr);
+                Integer value = 0;
+                if (currentBucket.getIdType() == Bucket.BOOLEAN) {
+                    if (currentBucket.getIdName() == "true") {
+                        value = 1;
+                    } else {
+                        value = 0;
+                    }
+                }
+                else if (currentBucket.getIdType() == Bucket.INTEGER) {
+                    value = Integer.valueOf(currentBucket.getIdName());
+                }
+                HMachine.memory[cell + 1] = value;
+                cell += 2;
+                break;
+            }
             // R49 : construct instructions similar to R31
             //       for non-function identifier
             case 49:
                 kode = Context.symbolHash.find(Context.currentStr).getIdKind();
 
                 if (kode == Bucket.FUNCTION)
-                    System.out.println("Unable to perform function implemetation.");
+                    R(46);
                 else
-                    obtainAddress();
+                    R(31);
 
                 break;
 
@@ -710,11 +787,10 @@ class Generate
                 kode = Context.symbolHash.find(Context.currentStr).getIdKind();
 
                 if (kode == Bucket.FUNCTION)
-                    System.out.println("Unable to perform function implemetation.");
+                    R(47);
                 else
                 {
-                   HMachine.memory[cell] = HMachine.LOAD;
-                   cell = cell + 1;
+                   R(32);
                 }
 
                 break;
