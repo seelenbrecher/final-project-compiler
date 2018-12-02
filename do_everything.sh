@@ -1,0 +1,8 @@
+#!/bin/bash
+java JLex.Main Scanner.lex
+java java_cup.Main Parser.cup
+mv Scanner.lex.java Yylex.java
+javac *.java
+
+# test
+java parser < input_example

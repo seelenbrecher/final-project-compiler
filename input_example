@@ -1,0 +1,8 @@
+{
+  var A[10]     : integer
+  var B         : integer;
+
+  if A = B then
+    put "Ok"
+  end if
+}
