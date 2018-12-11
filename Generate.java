@@ -221,7 +221,7 @@ class Generate
     {
         String teks;
 
-        // System.out.println("R" + ruleNo + " " + cell);
+        // System.out.println("R" + ruleNo + " " + cell + " " + Context.currentStr);
         switch(ruleNo)
         {
             // R0 : assign pc and mt
@@ -645,7 +645,6 @@ class Generate
             case 40:
                 ll = Context.symbolHash.find(Context.currentStr).getLexicLev();
                 on = Context.symbolHash.find(Context.currentStr).getOrderNum();
-
                 HMachine.memory[cell] = HMachine.NAME;
                 HMachine.memory[cell+1] = ll;
                 HMachine.memory[cell+2] = on;
@@ -701,7 +700,17 @@ class Generate
                 if (numberOfParam == 0) {
                     HMachine.memory[cell++] = HMachine.BR;
                 } else {
-                    //TODO ada parameter
+                    HMachine.memory[cell] = HMachine.PUSHMT;
+                    HMachine.memory[cell+1] = HMachine.PUSH;
+                    HMachine.memory[cell+2] = numberOfParam + 1;
+                    HMachine.memory[cell+3] = HMachine.SUB;
+                    HMachine.memory[cell+4] = HMachine.FLIP;
+                    HMachine.memory[cell+5] = HMachine.STORE;
+                    HMachine.memory[cell+6] = HMachine.PUSH;
+                    HMachine.memory[cell+7] = numberOfParam - 1;
+                    HMachine.memory[cell+8] = HMachine.POP;
+                    HMachine.memory[cell+9] = HMachine.BR;
+                    cell += 10;
                 }
                 break;
             }
@@ -752,22 +761,25 @@ class Generate
                 break;
             }
             // R48: Menyimpan argument untuk pemanggilan prosedu/fungsi. 
+            // looks like we do not need this
             case 48: {
-                HMachine.memory[cell] = HMachine.PUSH;
-                Bucket currentBucket = Context.symbolHash.find(Context.currentStr);
-                Integer value = 0;
-                if (currentBucket.getIdType() == Bucket.BOOLEAN) {
-                    if (currentBucket.getIdName() == "true") {
-                        value = 1;
-                    } else {
-                        value = 0;
-                    }
-                }
-                else if (currentBucket.getIdType() == Bucket.INTEGER) {
-                    value = Integer.valueOf(currentBucket.getIdName());
-                }
-                HMachine.memory[cell + 1] = value;
-                cell += 2;
+                // HMachine.memory[cell] = HMachine.PUSH;
+                // Bucket currentBucket = Context.symbolHash.find(Context.currentStr);
+                // Integer value = 0;
+                // System.out.println("HAHAHAHAH");
+                // if (currentBucket.getIdType() == Bucket.BOOLEAN) {
+                //     if (currentBucket.getIdName() == "true") {
+                //         value = 1;
+                //     } else {
+                //         value = 0;
+                //     }
+                // }
+                // else if (currentBucket.getIdType() == Bucket.INTEGER) {
+                //     System.out.println(Context.symbolStack.peek());
+                //     value = Integer.valueOf(currentBucket.getIdName());
+                // }
+                // HMachine.memory[cell + 1] = value;
+                // cell += 2;
                 break;
             }
             // R49 : construct instructions similar to R31

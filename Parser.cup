@@ -215,10 +215,10 @@ type               ::= INT C9
 optArrayBound      ::= C18 R37
                    |   LBRACKET simpleExpression C12 C11 R39 RBRACKET C19;
 
-parameters         ::= _current IDENT C3 C4 AS type C5 C11 C7 moreParameters ;
+parameters         ::= _current IDENT C3 C4 AS type C5 C25 C23 C18 C11 C7 moreParameters ;
 
 moreParameters     ::= 
-                   |   LISTSEP _current IDENT C3 C4 AS type C5 C11 C7 moreParameters ;
+                   |   LISTSEP _current IDENT C3 C4 AS type C5 C25 C23 C18 C11 C7 moreParameters ;
 
 outputs            ::= output moreOutput R30 ;
 

@@ -37,7 +37,7 @@ class Context
     {
         boolean error = false;
 
-        // System.out.println("C" + ruleNo + " " + Generate.cell);
+        // System.out.println("C" + ruleNo + " " + Generate.cell + " " + currentStr);
         switch(ruleNo)
         {
             case 0:
@@ -186,7 +186,7 @@ class Context
             case 21:
                 switch (symbolHash.find((String)symbolStack.peek()).getIdKind())
                 {
-                    case Bucket.UNDEFINED:
+                    case Bucket.UNDEFINED: 
                         System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
