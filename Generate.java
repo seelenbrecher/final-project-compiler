@@ -723,8 +723,30 @@ class Generate
                     HMachine.memory[cell] = HMachine.FLIP;
                     HMachine.memory[cell + 1] = HMachine.BR;
                     cell += 2;
+                } else if(numberOfParam == 1) {
+                    HMachine.memory[cell] = HMachine.PUSHMT;
+                    HMachine.memory[cell+1] = HMachine.PUSH;
+                    HMachine.memory[cell+2] = 3;
+                    HMachine.memory[cell+3] = HMachine.SUB;
+                    HMachine.memory[cell+4] = HMachine.FLIP;
+                    HMachine.memory[cell+5] = HMachine.STORE;
+                    HMachine.memory[cell+6] = HMachine.BR;
+                    cell += 7;
                 } else {
-                    //TODO ada parameter
+                    HMachine.memory[cell] = HMachine.PUSHMT;
+                    HMachine.memory[cell+1] = HMachine.PUSH;
+                    HMachine.memory[cell+2] = numberOfParam + 2;
+                    HMachine.memory[cell+3] = HMachine.SUB;
+                    HMachine.memory[cell+4] = HMachine.FLIP;
+                    HMachine.memory[cell+5] = HMachine.STORE;
+                    HMachine.memory[cell+6] = HMachine.PUSHMT;
+                    HMachine.memory[cell+7] = HMachine.PUSH;
+                    HMachine.memory[cell+8] = numberOfParam;
+                    HMachine.memory[cell+9] = HMachine.SUB;
+                    HMachine.memory[cell+10] = HMachine.FLIP;
+                    HMachine.memory[cell+11] = HMachine.STORE;
+                    HMachine.memory[cell+12] = HMachine.BR;
+                    cell += 13;
                 }
                 break;
             }

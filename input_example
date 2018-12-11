@@ -3,7 +3,7 @@
  var zzz : integer
 
 
-    proc y(a: integer, b: boolean) {
+    integer func y(a: integer, b: boolean) = {
      var dummy : integer
         ;
         
@@ -11,12 +11,14 @@
         zzz := 51
         a := 34
         b := false
-        dummy := 123
+        dummy := 123;
+        
+        0
     }
     ;
 
 
     x := 2
-    y(1337, false)
+    x := y(1337, false)
     put x
 }
