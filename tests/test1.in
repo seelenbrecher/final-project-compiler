@@ -3,9 +3,6 @@
     var int2 : integer
     var int3 : integer
     var bool : boolean
-
-    var arr1[10] : integer
-    var arr2[15] : boolean
     ;
 
     int1 := 15
@@ -14,8 +11,8 @@
     int3 := int1 + int2
     put int3
 
-    get int1
-    get int2
+    int1 := 111
+    int2 := 222
 
     int3 := int1 + int2
     put int3
@@ -38,8 +35,8 @@
         int3 := int3 + int2
     until int3 > int1
 
-    get int1
-    get int2
+    int1 := 111
+    int2 := 222
 
     if int1 > int2 then
         put int1
