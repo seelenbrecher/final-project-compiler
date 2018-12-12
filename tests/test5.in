@@ -1,0 +1,27 @@
+{
+    var int1 : integer
+    var int2 : integer
+    var bool : boolean
+
+    proc f(a1: integer, a2: integer, b: boolean) {
+        var res : integer;
+
+        if b then
+            res := a1 * a2
+        else
+            res := a1 + a2
+        end if
+
+        ;
+        res
+    }
+
+    ;
+
+    int1 := 20
+    int2 := 40
+    bool := false
+
+    int1 := f(int1, int2, bool)
+    put int1
+}

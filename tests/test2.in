@@ -1,0 +1,17 @@
+{
+    var int1 : integer
+    var int2 : integer
+
+    proc p {
+        put int2
+        put int1
+        put int1 + int2
+    }
+
+    ;
+
+    int1 := 20
+    int2 := 40
+
+    p
+}

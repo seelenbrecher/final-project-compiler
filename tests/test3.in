@@ -1,0 +1,25 @@
+{
+    var int1 : integer
+    var int2 : integer
+    var res : integer
+
+    int func f {
+        var int3 : integer
+        ;
+
+        int2 := int2 * int1
+        int3 := int1 + int2
+        ;
+
+        int3
+    }
+
+    ;
+
+    int1 := 20
+    int2 := 40
+
+    res := f
+
+    put res
+}
