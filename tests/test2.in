@@ -3,6 +3,7 @@
     var int2 : integer
 
     proc p {
+        ;
         put int2
         put int1
         put int1 + int2

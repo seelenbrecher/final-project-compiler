@@ -3,7 +3,7 @@
     var int2 : integer
     var res : integer
 
-    int func f {
+    integer func f = {
         var int3 : integer
         ;
 

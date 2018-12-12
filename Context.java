@@ -335,15 +335,15 @@ class Context
                 }
                 break;
             }
-            case 50:
+            case 38:
                 // push current order number ke stack
                 orderNumberStack.push(orderNumber);
                 break;
-            case 51:
+            case 39:
                 // setelah keluar dari scope parameter, balikin order numbernya
                 orderNumber = orderNumberStack.pop();
                 break;
-            case 52: {
+            case 40: {
                 symbolHash.find(currentStr).setBaseAddress(Generate.cell);
                 break;
             }

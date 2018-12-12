@@ -1,29 +1,20 @@
 {
     var int1 : integer
     var int2 : integer
-    var bool : boolean
+    var int3 : integer
 
-    proc p(a1: integer, a2: integer, b: boolean) {
+    proc p(a1: integer, a2: integer) {
         var res : integer;
 
-        if b then
-            res := a1 * a2
-        else
-            res := a1 + a2
-        end if
+        res := a1 + a2
 
         put res
     }
 
-    int func f(a1: integer, a2: integer, b: boolean) = {
+    integer func f(a1: integer, a2: integer) = {
         var res : integer;
 
-        if b then
-            res := a1 * a2
-        else
-            res := a1 + a2
-        end if
-
+        res := a1 * a2
         ;
         res
     }
@@ -32,7 +23,7 @@
 
     int1 := 20
     int2 := 40
-    bool := false
+    int3 := f(int1, f(int1, int2))
 
-    p(f(int1, f(int1, int2, bool)), int 2, bool)
+    p(int3, int2)
 }

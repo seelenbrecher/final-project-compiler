@@ -1,24 +1,18 @@
 {
- var x : integer
- var zzz : integer
+    var int1 : integer
+    var int2 : integer
 
-
-    integer func y(a: integer, b: boolean) = {
-     var dummy : integer
+    proc p {
         ;
-        
-        x := 321
-        zzz := 51
-        a := 34
-        b := false
-        dummy := 123;
-        
-        0
+        put int2
+        put int1
+        put int1 + int2
     }
+
     ;
 
+    int1 := 20
+    int2 := 40
 
-    x := 2
-    x := y(1337, false)
-    put x
+    p
 }
