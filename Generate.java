@@ -102,11 +102,12 @@ class Generate
     // Method to retrieve the address of a variable
     void obtainAddress()
     {
+        Integer lexicalLevel = Context.symbolHash.find(Context.currentStr).getLexicLev();
+        Integer orderNum = Context.symbolHash.find(Context.currentStr).getOrderNum();
+
         HMachine.memory[cell] = HMachine.NAME;
-        HMachine.memory[cell+1] = 
-            Context.symbolHash.find(Context.currentStr).getLexicLev();
-        HMachine.memory[cell+2] = 
-            Context.symbolHash.find(Context.currentStr).getOrderNum();
+        HMachine.memory[cell+1] = lexicalLevel;
+        HMachine.memory[cell+2] = orderNum;
 
         cell = cell + 3;
     }
@@ -807,12 +808,38 @@ class Generate
             // R49 : construct instructions similar to R31
             //       for non-function identifier
             case 49:
-                kode = Context.symbolHash.find(Context.currentStr).getIdKind();
+                Integer lexicalLevel = Context.symbolHash.find(Context.currentStr).getLexicLev();
+                Integer orderNum = Context.symbolHash.find(Context.currentStr).getOrderNum();
+                String subRoutineName = Context.subRoutineNamesStack.peek();
+                kode = Context.symbolHash.find(subRoutineName).getIdKind();
+                Integer numberOfParam = Context.symbolHash.find(subRoutineName).getParameters().size();
 
-                if (kode == Bucket.FUNCTION)
-                    R(46);
-                else
+                if (kode == Bucket.FUNCTION) {
+                    // add by 3, proc return addr and proc base addr and return function addr
+                    if (lexicalLevel % 2 == 1) {
+                        orderNum -= (3 + numberOfParam);
+                    }
+                    HMachine.memory[cell] = HMachine.NAME;
+                    HMachine.memory[cell+1] = lexicalLevel;
+                    HMachine.memory[cell+2] = orderNum;
+
+                    cell = cell + 3;
+                }
+                else if (kode == Bucket.PROCEDURE){
+                    //to get argumen base addr (when accessing argumen only, not local variable at body)
+                    // add by 2, proc return addr and proc base addr
+                    if (lexicalLevel % 2 == 1) {
+                        orderNum -= (2 + numberOfParam);
+                    }
+
+                    HMachine.memory[cell] = HMachine.NAME;
+                    HMachine.memory[cell+1] = lexicalLevel;
+                    HMachine.memory[cell+2] = orderNum;
+
+                    cell = cell + 3;
+                } else {
                     R(31);
+                }
 
                 break;
 

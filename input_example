@@ -1,18 +1,29 @@
 {
     var int1 : integer
     var int2 : integer
+    var int3 : integer
 
-    proc p {
+    proc p(a1: integer, a2: integer) {
+        var res : integer;
+
+        res := a1 + a2
+
+        put res
+    }
+
+    integer func f(a1: integer, a2: integer, b:integer, d: integer) = {
+        var res : integer;
+
+        res := a1 * a2
         ;
-        put int2
-        put int1
-        put int1 + int2
+        res
     }
 
     ;
 
     int1 := 20
     int2 := 40
+    int3 := f(int1, f(int1, int2, 1, 1), 1, 1)
 
-    p
+    p(int3, int2)
 }
